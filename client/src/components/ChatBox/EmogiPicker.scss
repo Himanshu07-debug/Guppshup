@@ -1,0 +1,106 @@
+.emogi-keyboard{
+    position: absolute;
+    position: absolute;
+    bottom: 70px;
+    left: 100px;
+    .EmojiPickerReact {
+        background-color: #131324;
+        overflow: hidden;
+        z-index: 1000;
+
+        .epr-header{
+            .epr-search{
+                background: transparent;
+                border: solid 2px #540f95;
+
+                &:focus{
+                    background: #131324;
+                    border: solid 2px #540f95;
+                    box-shadow: 0 0 5px #b277ea;
+                }
+            }
+        }
+
+        .epr-preview{
+            border-top: 1px solid #b277ea;
+        }
+        .epr-body{
+            &::-webkit-scrollbar{
+                background: #540f95;
+                width: 5px;
+            }
+
+            &::-webkit-scrollbar-thumb{
+                background: #0f011c;
+            }
+        }
+    }
+    aside.EmojiPickerReact.epr-main {
+        border-color: #131324;
+    }
+    .EmojiPickerReact li.epr-emoji-category>.epr-emoji-category-label {
+        background-color: #b277ea;
+        font-weight: 400;
+        color: #0f011c;
+        font-size: 1rem;
+        height: 1.5rem;
+        font-weight: 600;
+    }
+}
+
+
+@media only screen and (max-width : 1024px){
+
+    .emogi-keyboard{
+        position: absolute;
+        bottom: 30px;
+        left: 50px;
+
+        .EmojiPickerReact li.epr-emoji-category>.epr-emoji-category-label {
+            background-color: #b277ea;
+            font-weight: 400;
+            color: #0f011c;
+            font-size: 1rem;
+            height: 1.5rem;
+            font-weight: 600;
+        }
+    }    
+
+}
+
+@media only screen and (max-width : 768px){
+
+    .emogi-keyboard{
+        position: absolute;
+        bottom: 20px;
+        left: 30px;
+        .EmojiPickerReact li.epr-emoji-category>.epr-emoji-category-label {
+            background-color: #b277ea;
+            font-weight: 400;
+            color: #0f011c;
+            font-size: 1rem;
+            height: 1.3rem;
+            font-weight: 600;
+        }
+    }    
+
+}
+
+@media only screen and (max-width : 425px){
+
+    .emogi-keyboard{
+        position: absolute;
+        bottom: 15px;
+        left: 20px;
+
+        .EmojiPickerReact li.epr-emoji-category>.epr-emoji-category-label {
+            background-color: #b277ea;
+            font-weight: 400;
+            color: #0f011c;
+            font-size: 1rem;
+            height: 1rem;
+            font-weight: 600;
+        }
+    }    
+
+}

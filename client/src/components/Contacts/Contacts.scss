@@ -1,0 +1,311 @@
+.contacts-container {
+    background: linear-gradient(45deg, #752abc, #ce9aff);
+    border: solid 2px #7838b4;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .user-contacts {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        width: 100%;
+        height: 75vh;
+        padding: 1rem;
+        overflow-y: auto;
+        box-sizing: border-box;
+
+        &::-webkit-scrollbar {
+            width: 0.4rem;
+            border-radius: 0.4rem;
+        }
+
+        &::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 5px #0f011c;
+        }
+
+
+        &::-webkit-scrollbar-thumb {
+            background: #fff;
+        }
+
+        .loading {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            h3{
+                font-size: 1.3rem;
+            }
+            span{
+                font-size: 1.2rem;
+                color: #fff;
+            }
+        }
+
+        
+
+        .contact {
+            width: 100%;
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            flex-shrink: 0;
+            background: #ce9aff71;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            position: relative;
+
+            img {
+                width: 50px;
+                height: 50px;
+                border: solid 3px #ce9aff;
+                border-radius: 50%;
+                transition: all 0.5s ease;
+                padding: 2px;
+            }
+
+            .online{
+                content: "";
+                width: 15px;
+                height: 15px;
+                background: greenyellow;
+                position: absolute;
+                right: 15px;
+                top: 39%;
+                border-radius: 50%;
+                box-shadow: inset 0 0 8px green;
+            }
+
+            p {
+                width: 70%;
+                color: #fff;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                // margin-left: 20px;
+            }
+
+            &:hover{
+                background: #e2c3ff;
+                img{
+                    border: solid 3px #0f011c;
+                    box-shadow: 0 0 5px #7838b4;
+                }
+                p{
+                    color: #0f011c;
+                }
+            }
+        }
+
+        .active{
+            background: #e2c3ff;
+            img{
+                border: solid 3px #0f011c;
+                box-shadow: 0 0 5px #7838b4;
+            }
+            p{
+                color: #0f011c;
+            }
+        }
+    }
+
+    .user {
+        background: #0f011c;
+        border-bottom-left-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+        width: 100%;
+        height: 23%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+
+        img {
+            width: 70px;
+            height: 70px;
+            border: solid 3px #ce9aff;
+            border-radius: 50%;
+            transition: all 0.5s ease;
+            padding: 5px;
+            box-shadow: 0 0 10px #ce9aff;
+            transition: all 0.3s ease;
+
+            &:hover{
+                transform: scale(1.1);
+            }
+        }
+
+        .details{
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            width: 70%;
+            p{
+                font-size: 1.5rem;
+                color: #ce9aff;
+                font-weight: 600;
+                text-align: center;
+            }
+
+            span{
+                font-size: 15px;
+                font-weight: 500;
+                color: #fff;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width : 1350px){
+
+    .contacts-container{
+
+        .user-contacts {
+            gap: 0.6rem;
+    
+            .loading {
+
+                h3{
+                    font-size: 0.9rem;
+                }
+                span{
+                    font-size: 0.8rem;
+                }
+            }
+    
+        }
+    }
+
+} 
+
+
+@media only screen and (max-width : 1100px){
+
+    .contacts-container{
+
+        .user-contacts {
+            gap: 0.6rem;
+            
+    
+            .contact {
+                width: 100%;
+                height: 3rem;
+                padding: 0 1.4rem;
+                border-radius: 0.3rem;
+    
+                img {
+                    width: 50px;
+                    height: 50px;
+                    border: solid 3px #ce9aff;
+                    border-radius: 50%;
+                    transition: all 0.5s ease;
+                    padding: 2px;
+                }
+    
+                p {
+                    width: 70%;
+                }
+    
+            }
+        }
+
+        .user{
+            padding: 0 1rem;
+            img{
+                width: 60px;
+                height: 60px;
+            }
+
+            .details{
+                p{
+                    font-size: 1rem;
+                }
+                span{
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+
+} 
+
+
+@media only screen and (max-width : 580px){
+
+    .contacts-container{
+
+        .user-contacts {
+            gap: 0.4rem;
+    
+            .loading {
+
+                h3{
+                    font-size: 0.7rem;
+                }
+                span{
+                    font-size: 0.6rem;
+                }
+            }
+    
+            
+    
+            .contact {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                height: auto;
+                padding: 0 1rem;
+                border-radius: 0.3rem;
+    
+                img {
+                    width: 20px;
+                    height: 20px;
+                    border: solid 2px #ce9aff;
+                    padding: 1px;
+                }
+    
+                p {
+                    width: 70%;
+                }
+    
+            }
+        }
+
+        .user{
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            padding: 0 0.4rem;
+            img{
+                width: 35px;
+                height: 35px;
+            }
+
+            .details{
+                p{
+                    font-size: 0.8rem;
+                }
+                span{
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+
+} 
+
+
+

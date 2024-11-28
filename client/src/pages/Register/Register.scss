@@ -1,0 +1,228 @@
+// .register-container{
+//     min-height: 100vh;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     flex-direction: column;
+//     background-color: #131324;
+//     gap: 2rem;
+
+//     .form-container{
+//         display: flex;
+//         flex-direction: column;
+//         width: 450px;
+//         gap: 1rem;
+//         background: #00000076;
+//         border-radius: 0.5rem;
+//         padding: 2rem 3rem;
+//         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+//         margin-bottom: 10rem;
+
+//         .heading{
+//             text-transform: uppercase;
+//             h3{
+//                 letter-spacing: 1.5px;
+//                 font-size: 1.8rem;
+//                 font-weight: 500;
+//                 color: #fff;
+//                 padding: 0 3rem;
+//                 text-align: center;
+//             }
+//         }
+
+//         input{
+//             background-color: transparent;
+//             font-size: 1rem;
+//             padding: 0.8rem;
+//             color: #fff;
+//             border: solid 1.5px #7838b4;
+//             border-radius: 0.3rem;
+//             outline: none;
+//             transition: all 0.3s ease;
+
+            
+//             &:autofill {
+//                 -webkit-text-fill-color: #fff;
+//                 box-shadow: 0 0 0px 1000px #131324 inset;
+//                 transition: background-color 5000s ease-in-out 0s;
+//             }
+
+//             &:focus{
+//                 background: #131324;
+//             }
+
+//             &:hover{
+//                 background: #131324;
+//             }
+
+//         }
+
+//         button{
+//             padding: 0.6rem;
+//             border-radius: 0.3rem;
+//             cursor: pointer;
+//             font-size: 1.2rem;
+//             border: solid 1.5px #7838b4;
+//             outline: none;
+//             background: #7838b4;
+//             color: #fff;
+//             letter-spacing: 1px;
+//             transition: all 0.5s ease;
+//             font-weight: 400;
+
+//             &:hover{
+//                 background: #7838b4;
+//             }
+//         }
+
+//         span{
+//             margin: auto;
+//             color: #8c8c8c;
+//             font-weight: 300;
+//             font-size: 16px;
+            
+//             .link{
+//                 color: #9737ff;
+//                 text-decoration: none;
+//                 margin-left: 0.5rem;
+//             }
+//         }
+//     }
+
+// }
+
+
+// @media (max-width : 500px){
+//     .register-container{
+//         .form-container{
+//             width: 300px;
+//         }
+//     }
+// }
+
+.register-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #131324;
+    padding: 1rem;
+    gap: 2rem;
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 450px; /* Max width to ensure it doesn't get too wide */
+        gap: 1rem;
+        background: #00000076;
+        border-radius: 0.5rem;
+        padding: 2rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        margin-bottom: 10rem;
+
+        .heading {
+            text-transform: uppercase;
+            h3 {
+                letter-spacing: 1.5px;
+                font-size: 1.5rem; /* Adjusted font size for better responsiveness */
+                font-weight: 500;
+                color: #fff;
+                padding: 0 2rem; /* Reduced padding for smaller screens */
+                text-align: center;
+            }
+        }
+
+        input {
+            background-color: transparent;
+            font-size: 1rem;
+            padding: 0.7rem; /* Adjusted padding for smaller screens */
+            color: #fff;
+            border: solid 1.5px #7838b4;
+            border-radius: 0.3rem;
+            outline: none;
+            transition: all 0.3s ease;
+
+            &:autofill {
+                -webkit-text-fill-color: #fff;
+                box-shadow: 0 0 0px 1000px #131324 inset;
+                transition: background-color 5000s ease-in-out 0s;
+            }
+
+            &:focus {
+                background: #131324;
+            }
+
+            &:hover {
+                background: #131324;
+            }
+        }
+
+        button {
+            padding: 0.7rem; /* Adjusted padding for smaller screens */
+            border-radius: 0.3rem;
+            cursor: pointer;
+            font-size: 1.1rem; /* Adjusted font size for better responsiveness */
+            border: solid 1.5px #7838b4;
+            outline: none;
+            background: #7838b4;
+            color: #fff;
+            letter-spacing: 1px;
+            transition: all 0.5s ease;
+            font-weight: 400;
+
+            &:hover {
+                background: #7838b4;
+            }
+        }
+
+        span {
+            margin: auto;
+            color: #8c8c8c;
+            font-weight: 300;
+            font-size: 14px; /* Adjusted font size for better responsiveness */
+
+            .link {
+                color: #9737ff;
+                text-decoration: none;
+                margin-left: 0.5rem;
+            }
+        }
+    }
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 500px) {
+    .register-container {
+        .form-container {
+            width: 100%;
+            max-width: 320px; /* Further reduced max-width for smaller screens */
+            padding: 1.5rem; /* Reduced padding for better fit */
+            gap: 0.8rem; /* Reduced gap between elements */
+        }
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+    .register-container {
+        .form-container {
+            max-width: 280px; /* Further reduced for very small screens */
+            padding: 1rem;
+        }
+
+        .heading h3 {
+            font-size: 1.3rem;
+        }
+
+        input, button {
+            font-size: 0.9rem;
+            padding: 0.6rem;
+        }
+
+        span {
+            font-size: 12px;
+        }
+    }
+}

@@ -1,0 +1,91 @@
+.chat-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .loader{
+        width: inherit;
+        height: inherit;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .messages{
+        width: 100%;
+
+        .message{
+            margin-bottom: 0.8rem;
+            max-width: 45%;
+            p{
+                padding: 0.5rem 0.5rem ;
+                display: block;
+                font-size: 0.9rem;
+                color: white;
+                border-radius: 5px;
+                position: relative;
+                z-index: 2;
+
+                span{
+                    width: 50px;
+                    height: 30px;
+                    border-radius: 10px;
+                    position: absolute;
+                    right: -10px;
+                    top: -10px;
+                    font-size: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    display: none;
+                }
+
+                &:hover{
+                    span{
+                        display: flex;
+                    }
+                }
+            }
+
+        }
+
+        .message-time {
+            display: block;
+            font-size: 0.75em;
+            color: #999;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .sended{
+            float: right;
+            clear: both;
+            p{
+                background : #752abc;
+                span{
+                    background: #752abc;
+                    color: #e1c0ff;
+                    border: solid 1.5px #ce9aff;
+                }
+            }
+        }
+
+        .received{
+            float: left;
+            clear: both;
+            p{
+                background: #ce9aff;
+                color: #0f011c;
+                font-weight: 500;
+                span{
+                    color: #3d1d5b;
+                    background: #ce9aff;
+                    border: solid 1.5px #752abc;
+                }
+            }
+        }
+
+    }
+
+}
+

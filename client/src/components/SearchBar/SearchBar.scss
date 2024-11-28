@@ -1,0 +1,177 @@
+// .search-bar {
+//     width: 300px;
+//     position: relative;
+
+//     .search-input {
+
+//         input {
+//             width: 100%;
+//             height: 40px;
+//             padding: 0 0.5rem;
+//             background: transparent;
+//             border: solid 1px #7838b4;
+//             border-radius: 0.3rem;
+//             outline: none;
+//             color: #fff;
+//         }
+
+//     }
+
+//     .search-modal {
+//         position: absolute;
+//         margin-top: 5px;
+//         width: 100%;
+//         background: #7838b4;
+//         border: solid 2px #ce9aff;
+//         border-radius: 0.3rem;
+
+//         .item{
+//             display: flex;
+//             align-items: center;
+//             justify-content: space-between;
+//             padding: 0.5rem 2rem;
+//             border-radius: 0.3rem;
+//             border-bottom: solid 2px #ce9aff;
+//             color: #fff;
+//             height: 50px;
+
+//             &:nth-last-child(1){
+//                 border-bottom: none;
+//             }
+
+//             &:hover{
+//                 background: #ce9aff;
+
+//                 img{
+//                     border: solid 3px #7838b4;
+//                 }
+//             }
+
+//             img{
+//                 width: 30px;
+//                 height: 30px;
+//                 border: solid 3px #ce9aff;
+//                 border-radius: 50%;
+//                 transition: all 0.5s ease;
+//                 padding: 2px;
+//             }
+//         }
+//     }
+// }
+
+
+.search-bar {
+    width: 400px; // Limit the maximum width for larger screens
+    position: relative;
+
+    .search-input {
+        input {
+            width: 100%;
+            height: 40px;
+            padding: 0 0.5rem;
+            background: transparent;
+            border: solid 1px #7838b4;
+            border-radius: 0.3rem;
+            outline: none;
+            color: #fff;
+        }
+    }
+
+    .search-modal {
+        position: absolute;
+        top: 50px; // Add some spacing from the input
+        width: 100%;
+        background: #7838b4;
+        border: solid 2px #ce9aff;
+        border-radius: 0.3rem;
+        z-index: 10; // Ensure it appears above other elements
+
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 1rem; // Reduced padding for smaller screens
+            border-radius: 0.3rem;
+            border-bottom: solid 2px #ce9aff;
+            color: #fff;
+            height: 50px;
+
+            &:nth-last-child(1) {
+                border-bottom: none;
+            }
+
+            &:hover {
+                background: #ce9aff;
+
+                img {
+                    border: solid 3px #7838b4;
+                }
+            }
+
+            img {
+                width: 30px;
+                height: 30px;
+                border: solid 3px #ce9aff;
+                border-radius: 50%;
+                transition: all 0.5s ease;
+                padding: 2px;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 930px) {
+    .search-bar {
+        width: 350px; // Reduce max-width for tablets
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .search-bar {
+        width: 230px; // Reduce max-width for tablets
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    .search-bar {
+        width: 170px; // Reduce max-width for small screens
+
+        .search-input{
+            input{
+                height: 28px;
+            }
+        }
+
+        .search-modal {
+            top: 45px; // Adjust positioning for smaller screens
+        }
+
+        .item {
+            padding: 0.5rem; // Reduce padding for small screens
+
+            img {
+                width: 25px; // Reduce image size for small screens
+                height: 25px;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .search-bar {
+        width: 100px; // Further reduce max-width for very small screens
+
+        .search-input{
+
+            input{
+                padding: 1.5px 0.5px;
+                text-align: center;
+                height: 25px;
+            }
+
+            input::placeholder {
+                font-size: 10px; 
+            }
+        }
+    }
+}

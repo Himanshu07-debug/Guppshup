@@ -1,0 +1,75 @@
+.chat{
+    background: #131324;
+    min-height: calc(100vh - 11vh); /* Adjust height based on header */
+    padding: 0.5rem 2rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    z-index: -1;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin-top: 1.5rem;
+   
+
+    .chat-container{
+        width: 100%;
+        display: flex;
+        gap: 1rem;
+
+        .contacts{
+            width: 25%;
+        }
+
+        .chat-box-wrapper{
+            width: 75%;
+            // height: 85.5vh;
+            background: #0f011c;
+            border: solid 2px #7838b4;
+            border-radius: 0.5rem;
+        }
+    }
+}
+
+
+@media only screen and (max-width : 776px){
+    .chat{
+
+        .chat-container{
+
+            .contacts{
+                width: 40%;
+            }
+
+            .chat-box-wrapper{
+                width: 60%;
+            }
+
+        }
+
+    }
+}
+
+@media only screen and (max-width : 450px){
+    .chat{
+
+        padding: 0.3rem 1rem 0.3rem;
+
+        .chat-container{
+
+            .contacts{
+                width: 35%;
+            }
+
+            .chat-box-wrapper{
+                width: 65%;
+            }
+
+        }
+
+    }
+}
+
+
+
