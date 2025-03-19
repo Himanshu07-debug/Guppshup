@@ -29,7 +29,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://gupshup-server.onrender.com",
+  // "proxy": "https://gupshup-server.onrender.com",
+  "proxy": "https://api.multiavatar.com",
   "eslintConfig": {
     "extends": [
       "react-app",
