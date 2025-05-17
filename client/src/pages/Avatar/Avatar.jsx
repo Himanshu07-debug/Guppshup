@@ -51,8 +51,10 @@ const Avatar = () => {
     const random = Math.round((Math.random() * (max - min) + min));
 
     // returning the imageURL
-    const imgUrl = api + JSON.stringify(random) + '.png';
+    // const imgUrl = api + JSON.stringify(random) + '.png';
 
+    const imgUrl = 'https://avatar.iran.liara.run/public';
+    
     return imgUrl;
 
   }
