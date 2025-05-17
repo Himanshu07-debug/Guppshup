@@ -54,6 +54,8 @@ const Avatar = () => {
     // const imgUrl = api + JSON.stringify(random) + '.png';
 
     const imgUrl = 'https://avatar.iran.liara.run/public';
+
+    console.log(imgUrl);
     
     return imgUrl;
 
@@ -110,6 +112,7 @@ const Avatar = () => {
         <div className="avatars">
           {
             avatarArr.map((item, index) => {
+              console.log(item);
               return (
                 <img src={item} alt="avatar-img" className='avatar-img' 
                 draggable = {false} onClick = {handleSetAvatar} key={index}
