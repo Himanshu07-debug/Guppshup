@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './Contacts.scss'
 import axios from 'axios';
-import Loader from '../Loader'
-import { getAllContactsApi } from '../../apis/restapis';
+import Loader from '../Loader.jsx'
+import { getAllContactsApi } from '../../apis/restapis.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedContact } from '../../store/contactSlice.js'
 
@@ -28,13 +28,13 @@ const Contacts = () => {
             setIsLoading(false);
         }
         catch (err) {
-            console.log(err);
+            // console.log(err);
         }
     }
 
     useEffect(() => {
         getAllContacts();
-    }, [contactList]);
+    }, []);
 
     // console.log(contactList);
     // console.log(onlineContacts);
@@ -63,10 +63,7 @@ const Contacts = () => {
                             :
                             contactList.map((item) => {
                                 return (
-                                    // checkout the scss file.. contact active likhne ki need nhi.. only active as classname
-                                    <div 
-                                    className={selectedContact!==undefined && selectedContact._id === item._id ? "contact active" : "contact"} 
-                                    key={item._id} onClick={()=>handleContactChange(item)}>
+                                    <div className={selectedContact!==undefined && selectedContact._id === item._id ? "contact active" : "contact"} key={item._id} onClick={()=>handleContactChange(item)}>
                                         <img src={item.avatarPath} alt="avatar"/>
                                         <p>{item.userName}</p>
                                         <span className='online' style ={{display : onlineContacts.includes(item._id) ? "block" : "none"}}></span>

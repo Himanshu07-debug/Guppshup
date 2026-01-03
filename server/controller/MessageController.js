@@ -1,28 +1,5 @@
 import Messages from '../models/MessageModel.js';
 
-// add Message :
-// Whenever a new message is done by the user, ek new message document create krnge ..
-// Array me each document ke liye sirf 2 entity honge, from and to
-// User A ne User B ko 2 baar msg kiya .. dono ke alag alag documents with same from to and Sender
-
-// Look out this :
-
-// "message": {
-//     "text": "U2FsdGVkX18y9ECc4FPcd2XAVbITUyB7+CZlbAbarfg="  // encrypted at frontend
-// },
-// "users": [
-//     "668be0183ba4bebecda869fa",
-//     "668bdedc3ba4bebecda731e2"
-// ],
-// "sender": {
-//     "$oid": "668be0183ba4bebecda869fa"
-// },
-
-
-// getAllMessages :
-// Searching all the message document with [from, to]
-// then we will display this message on the container
-
 export const addMessage = async (req, res) => {
 
     try {
@@ -60,17 +37,12 @@ export const getAllMessages = async (req, res) => {
                 $all: [from, to]
             }
         }).sort({
-            updatedAt: 1    // sorted messages in ascending order of their updatedAt
-
-            // change 1 to -1 to sort in descending order
+            updatedAt: 1
         });
 
-
-        // Map is used to convert the array of messages to new array of objects
-        // fromSelf is an boolean one indicating the message sender is from and message is the entire msg
         const ProjectMessages = messages.map((message) => {
             return {
-                fromSelf: message.sender.toString() === from,  // message.sender is an id .. convert to string
+                fromSelf: message.sender.toString() === from,
                 message: message
             }
         })

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './Header.scss'
 import { Comment } from 'react-loader-spinner'
 import { useDispatch } from 'react-redux'
@@ -13,8 +13,6 @@ const Header = (props) => {
     const Navigate = useNavigate();
     const [user, setUser] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const location = useLocation();
-
 
     useEffect(() => {
         const userData = JSON.parse(localStorage.getItem('user-data'));
@@ -36,32 +34,18 @@ const Header = (props) => {
         })
     }
 
-    // this ensures that the model is closed, whenever we click anywhere outside the model
     const OutSideClickHandler = (ref) => {
         useEffect(() => {
             const handleOutSideClick = (e) => {
-                if (ref.current && !ref.current.contains(e.target)) {  // !ref.current.contains(e.target) -> click model pe nhi hua hai
+                if (ref.current && !ref.current.contains(e.target)) {
                     setIsModalOpen(false);
                 }
             }
             document.addEventListener('click', handleOutSideClick);
 
-            // Cleanup: 
-            // This line removes the event listener that was added to the document when the component either unmounts or re-renders with a 
-            // different ref.
-            // ensures that memory leak is not there
             return () => document.removeEventListener('click', handleOutSideClick);
-            
         }, [ref])
     }
-
-
-    // use of ref ?
-    // 1. The ref is used to point to the DOM element (e.g., the modal). The event listener checks if the click happened outside this element 
-    // using ref.current.
-    // 2. ref is essential when you need to directly interact with a DOM element, especially in cases like modals, dropdowns, or input focus.
-
-    
 
     OutSideClickHandler(modalRef);
 
@@ -82,7 +66,7 @@ const Header = (props) => {
                     <h1>Gup<span>Shup</span></h1>
                 </Link>
                 {
-                    props.btnText === 'Sign Out' && location.pathname !== '/avatar'
+                    props.btnText === 'Sign Out'
                     &&
                     <SearchBar />
                 }
@@ -106,10 +90,8 @@ const Header = (props) => {
                 {/* {props.btnText === 'Sign Out' && <Link className="video-icon" to='/video'><FaVideo /></Link>} */}
                 {props.btnText !== 'Sign Out' && <Link className='link' to={props.linkTo}>{props.btnText}</Link>}
             </div>
-
-
         </div>
     )
 }
 
-export default Header;
+export default Header

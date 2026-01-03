@@ -1,5 +1,4 @@
-// export const host = 'https://gupshup-server.onrender.com'
-export const host = 'http://localhost:3001'
+export const host = 'https://gupshup-server.onrender.com'
 
 export const registerApi = `${host}/api/register`;
 export const loginApi = `${host}/api/login`;

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { isUserPresent } from "../utils/functions";
 
 const initialState = {
-    isLoggedIn : isUserPresent(),   // called the utils function to see that in local storage user is there or not
+    isLoggedIn : isUserPresent(),
 }
 
 const userSlice = createSlice({

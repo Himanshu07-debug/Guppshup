@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux';
 import axios from 'axios'
-
 import './Register.scss';
 import Header from '../../components/Header/Header';
+
 import { toast } from 'react-toastify';
+
 import {registerApi} from '../../apis/restapis';
+
 import 'react-toastify/dist/ReactToastify.css';
 import { setIsLoggedIn } from '../../store/userSlice';
 
@@ -24,7 +26,6 @@ const Register = () => {
         confirmPassword: ""
     })
 
-
     const handleChange = (event) => {
         setUserData((prevData) => {
             return {
@@ -34,8 +35,6 @@ const Register = () => {
         })
     }
 
-    
-    // toast options 
     const toastOptions = {  
         position: "top-right",
         autoClose: 5000,
@@ -46,17 +45,6 @@ const Register = () => {
         progress: undefined,
         theme: "dark",
     }
-
-    // if the user is registered and its try to access register route, we have to redirect to the chat page
-    // have to check this when the page gets loaded... first time sirf chalega useEffect
-    // Remember : Yeah apne main wale me nhi likha hai.. useEffect
-    useEffect(() => {
-        if(localStorage.getItem("user-data")){
-            Navigate("/");
-        }
-    }, []);
-
-    // validating form validation
     const handleValidation = () => {
         const { userName, email, password, confirmPassword } = userData;
 
@@ -79,29 +67,18 @@ const Register = () => {
 
     }
 
-
-    // handling the submit part
     const handleSubmit = async (event) => {
 
         event.preventDefault();
 
-        // validation done
         if(handleValidation()){
             try{
-
-                // Making a Post request with sending userData 
+                // console.log(userData);
                 const response = await axios.post(registerApi, userData);
-
                 if(response.status === 201){
                     toast.success('Registration Successfull!!', toastOptions);
-
-                    // If the request is processed, store the user in the local storage for further use
                     localStorage.setItem('user-data', JSON.stringify(response.data));
-
-                    // state variable ko set as true
                     dispatch(setIsLoggedIn(true));
-
-                    // navigating to the avatar page to select avatar for the new guy
                     Navigate('/avatar');
                 }
             }
@@ -125,8 +102,6 @@ const Register = () => {
                 <input type="password" placeholder='Password' name='password' onChange={handleChange} value={userData.password} />
                 <input type="password" placeholder='Confirm Password' name='confirmPassword' onChange={handleChange} value={userData.confirmPassword} />
                 <button type="Submit"> SIGN UP </button>
-
-                {/* LINK component used */}
                 <span>Already a user? <Link className='link' to='/login'>Sign In</Link></span>
             </form>
         </div>

@@ -11,7 +11,7 @@ import Avatar from './pages/Avatar/Avatar';
 
 
 function App() {
-  
+  // const [isAuthenticated, isUserAuthenticated] = useState(false);
   return (
     <BrowserRouter>
       <Provider store={store}>

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import './Login.scss'
 import Header from '../../components/Header/Header'
+
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
@@ -60,39 +61,20 @@ const Login = () => {
         
         return true;
     }
-
-    // if the user is already login and its try to access login route, we have to redirect to the chat page
-    // have to check this when the page gets loaded... first time sirf chalega useEffect
-    // Remember : Yeah apne main wale me nhi likha hai.. useEffect
-    useEffect(() => {
-        if(localStorage.getItem("user-data")){
-            Navigate("/");
-        }
-    }, []);
     
 
-    // Pura JSX code same as Register.jsx, udhar se hi copy-paste maare hai.. and made some changes
     const handleSubmit = async(event) => {
         event.preventDefault();
-
         // console.log(loginApi);
-
         if(handleValidation()){
-
             try{
                 const response = await axios.post(loginApi, userData);
-
                 if(response.status === 200){
                     toast.success('Logged In Successfully!!', toastOptions);
-
-
                     localStorage.setItem('user-data', JSON.stringify(response.data.user));
-
                     sessionStorage.setItem('accessToken', `Bearer ${response.data.accessToken}`);
                     sessionStorage.setItem('refreshToken', `Bearer ${response.data.refreshToken}`);
-
                     dispatch(setIsLoggedIn(true));
-
                     Navigate('/')
                 }
             }

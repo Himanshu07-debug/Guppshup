@@ -15,10 +15,9 @@ const ChatContainer = () => {
 
     const CurrentUser = JSON.parse(localStorage.getItem('user-data'));
     const SelectedUser = useSelector((state) => state.contact.selectedContact);
-    const messageArr = useSelector((state) => state.messages.messageArr);
+    const messageArr = useSelector((state)=>state.messages.messageArr);
     const [isLoading, setIsLoading] = useState(true);
 
-    // smooth scrolling to the latest message send in the chat container
     useEffect(() => {
         scrollRef.current?.scrollIntoView({behaviour : 'smooth'});
     }, [messageArr]);
@@ -33,7 +32,7 @@ const ChatContainer = () => {
             if (response.status === 200) {
                 // Decrypt and maintain the same structure
                 response.data.forEach((message) => {
-
+                    // Replace 'qweyrgwtwuigu' with your encryption secret key
                     const decryptedBytes = CryptoJS.AES.decrypt(message.message.message.text, 'qweyrgwtwuigu');
                     const decryptedMessage = decryptedBytes.toString(CryptoJS.enc.Utf8);
                     
@@ -55,7 +54,6 @@ const ChatContainer = () => {
     
     // console.log(messageArr);
 
-    // Whenever the user change. we want all the messages that the login user had talk with person.. so getAllmsg
     useEffect(() => {
         getAllMessages()
     }, [SelectedUser]);
@@ -73,7 +71,7 @@ const ChatContainer = () => {
                     <div className="messages">
                         {
                             messageArr.map((message) => {
-                                // console.log(message.fromSelf);
+                                // console.log(message.fromSelf) ;
                                 return(
                                     <div className={message.fromSelf ? "message sended" : "message received"} key={message._id} ref={scrollRef}>
                                     <p>{message.message.message.text}</p>

@@ -37,13 +37,17 @@
     .chat{
 
         .chat-container{
+            flex-direction: row;
+            gap: 0.5rem;
 
             .contacts{
                 width: 40%;
+                min-width: 150px;
             }
 
             .chat-box-wrapper{
                 width: 60%;
+                min-width: 200px;
             }
 
         }
@@ -51,23 +55,69 @@
     }
 }
 
-@media only screen and (max-width : 450px){
+@media only screen and (max-width : 600px){
     .chat{
-
-        padding: 0.3rem 1rem 0.3rem;
+        padding: 0.3rem 0.5rem 0.3rem;
 
         .chat-container{
+            gap: 0.3rem;
 
             .contacts{
                 width: 35%;
+                min-width: 120px;
             }
 
             .chat-box-wrapper{
                 width: 65%;
+                min-width: 180px;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width : 450px){
+
+    .chat{
+
+        min-height: calc(100vh - 8vh); /* Adjust height based on header */
+
+        padding: 0.3rem 0.3rem 0.3rem;
+
+        .chat-container{
+            gap: 0.3rem;
+
+            .contacts{
+                width: 35%;
+                min-width: 100px;
+            }
+
+            .chat-box-wrapper{
+                width: 65%;
+                min-width: 150px;
             }
 
         }
 
+    }
+}
+
+@media only screen and (max-width : 380px){
+    .chat{
+        padding: 0.2rem 0.2rem 0.2rem;
+
+        .chat-container{
+            gap: 0.2rem;
+
+            .contacts{
+                width: 38%;
+                min-width: 90px;
+            }
+
+            .chat-box-wrapper{
+                width: 62%;
+                min-width: 140px;
+            }
+        }
     }
 }
 

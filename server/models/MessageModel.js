@@ -7,9 +7,7 @@ const MessageSchema = new mongoose.Schema({
             required:true,
         },
     },
-    users: Array,   // user involved in the conversation of message
-
-    // here we had relationship between table.. message model has a User model sender
+    users: Array,
     sender : {
         type: mongoose.Schema.Types.ObjectId,
         ref : "User",

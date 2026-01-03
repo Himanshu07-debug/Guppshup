@@ -3,10 +3,12 @@ import jwt from 'jsonwebtoken';
 
 import Token from  '../models/Token.js'
 
+
 export const authenticateToken = (request, response, next) => {
 
     const { token } = request.body;
 
+    console.log("AUTHENTICATION") ;
     if (token == null) {
         return response.status(401).json({ msg: 'token is missing login again' });
     }
@@ -37,9 +39,10 @@ export const createNewToken = async (request, response) => {
         if (error) {
             response.status(500).json({ msg: 'invalid refresh token'});
         }
-        const accessToken = jwt.sign(user, process.env.ACCESS_SECRET_KEY, { expiresIn: '20d'});
+        const accessToken = jwt.sign(user, process.env.ACCESS_SECRET_KEY, { expiresIn: '15m'});
 
         return response.status(200).json({ accessToken: accessToken })
     })
+
 
 }

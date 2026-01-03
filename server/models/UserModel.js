@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
     },
     isAvatarSet : {
         type : Boolean,
-        default : false,  // for starting, no avatar image is set
+        default : false,
     },
     avatarPath : {
         type : String,

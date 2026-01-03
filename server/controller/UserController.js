@@ -3,12 +3,12 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 
-// Register route Controller
 export const registerUser = async(req, res) => {
 
     try {
-
         const { userName, email, password } = req.body;
+
+        console.log("aaya");
 
         const user = await User.findOne({ email: email });
 
@@ -39,7 +39,6 @@ export const registerUser = async(req, res) => {
 
 }
 
-// Login user route
 export const loginUser = async (req, res) => {
 
     try {
@@ -47,7 +46,7 @@ export const loginUser = async (req, res) => {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email: email });
-        // console.log(user.toJSON());
+        console.log(user.toJSON());
 
         if (!user) {
             res.status(400).json({ error: "User not exist!!, please register." });
@@ -59,15 +58,10 @@ export const loginUser = async (req, res) => {
             res.status(400).json({ error: "Invalid credentials. Please check your password!!" });
         }
         else {
-            // Generating accessToken as well as the refreshToken
             const accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_SECRET_KEY, { expiresIn: "20d"});
-            const refreshToken = jwt.sign(user.toJSON(), process.env.REFRESH_SECRET_KEY);
-            
-            // deleting the field before sending response, becz wo local storage pe nhi dikhna chahiye
-            delete user.password;
-
-
-            res.status(200).json({ accessToken: accessToken, refreshToken: refreshToken, user:user});
+            const refreshToken = jwt.sign(user.toJSON(), process.env.REFRESH_SECRET_KEY, { expiresIn: "20d"});
+        
+            res.status(200).json({ accessToken: accessToken, refreshToken: refreshToken,user:user});
         
         }
     }
@@ -78,11 +72,10 @@ export const loginUser = async (req, res) => {
     }
 }
 
-// user avatar setting route.. Login/ register ke time user ban gya tha.. usko sirf update krna hai
 export const setUserAvatar = async (req, res) => {
 
     try {
-        const { id } = req.params;  // user ki id bheje ho
+        const { id } = req.params;
         const { avatarPath } = req.body;
 
         const user = await User.findByIdAndUpdate(id, { isAvatarSet: true, avatarPath: avatarPath }, { new: true });
@@ -101,17 +94,8 @@ export const searchUser = async (req, res) => {
         const { userName } = req.params;
 
         const result = await User.find({
-
-            // If you had multiple conditions(e.g., searching by userName or email), $or would return results that match any of those conditions.
-            // Here we have only 1 condition. so we can skip the $or
-
-            // If you plan to add more search criteria later, it would be more useful.
-
             $or: [
-                { userName: { $regex: userName, $options: 'i' } }   
-                // $regex --> allowed to do pattern matching meaning it can find any user whose username contains the search string.
-                // $options --> The i option makes the search case-insensitive, so it matches userName regardless of 
-                //              whether it's in uppercase or lowercase.
+                { userName: { $regex: userName, $options: 'i' } }
             ]
         });
 
@@ -160,7 +144,6 @@ export const getAllContacts = async(req, res) => {
 
         for(let i=0; i<contacts.length; i++){
             
-            // 0 means excluding the particular fields from the object
             const contactUser = await User.findById(contacts[i]).select({password : 0, isAvatarSet : 0, contacts : 0, __V : 0});
 
             responseArr.push(contactUser);

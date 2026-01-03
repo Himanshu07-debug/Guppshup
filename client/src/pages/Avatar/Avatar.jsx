@@ -10,9 +10,6 @@ import { useNavigate } from 'react-router-dom'
 const Avatar = () => {
 
   const Navigate = useNavigate();
-
-  // Open source API for getting avatar
-  // sirf apko query params me iss link ke aage random number pass kro.. wo koi bhi avatar de denga
   const api = 'https://api.multiavatar.com/'
 
   const [user, setUser] = useState({});
@@ -29,64 +26,42 @@ const Avatar = () => {
     theme: "dark",
   }
 
-  // setting user to authenticated user credentials from local storage
   useEffect(() => {
-
-    // if user is not login, redirect to the login page
-    if(!localStorage.getItem('user-data')){
-      Navigate("/login");
-    }
-
     const userData = JSON.parse(localStorage.getItem('user-data'));
     setUser(userData);
   }, [])
 
-  
-  // generating avatar function
-  const getAvatar = () => {
-    let min = 5000;
-    let max = 100000;
-
-    // generating the random number
-    const random = Math.round((Math.random() * (max - min) + min));
-
-    // returning the imageURL
-    const imgUrl = api + JSON.stringify(random) + '.png';
-
-    return imgUrl;
-
-  }
-
-  // useEffect to generate the random avatars for the page
   useEffect(() => {
+    if (user.userName) {
+      const getAvatar = (index) => {
+        // Generate unique avatars using dicebear.com with different styles
+        const styles = ['avataaars', 'micah', 'open-peeps'];
+        const style = styles[index % styles.length];
+        const seed = `${user.userName}-${index}-${user._id || Date.now()}`;
+        const imgUrl = `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
+        return imgUrl;
+      };
 
-    // Only loading avatars
-    for (let i = 0; i < 3; i++) {
-      const imgUrl = getAvatar();
-      setAvatarArr((prevArrData) => {
-        return [...prevArrData, imgUrl];
-      })
+      const newAvatars = [];
+      for (let i = 0; i < 3; i++) {
+        const imgUrl = getAvatar(i);
+        newAvatars.push(imgUrl);
+      }
+      setAvatarArr(newAvatars);
     }
-    getAvatar();
+  }, [user]);
 
-  }, []);
-
-  // If the user selects an avatar
   const handleSetAvatar = async (e) => {
     try{
         const id = user._id;
 
-        // Calling API with the user_id so that it can be find and updated with its imageUrl (avatarPath)
         const url = avatarApi + id;
 
-        // sending PUT request to update the avatarPath in the users obj of backend which is also stored in local storage 
         const response = await axios.put(url, {
           avatarPath : e.target.src
         })
 
         if(response.status === 200){
-
-          // updating in local storage with the updated user credentials
           localStorage.setItem('user-data', JSON.stringify(response.data));
           toast.success('Avatar Selected Successfully', toastOptions);
           Navigate('/');
@@ -109,9 +84,7 @@ const Avatar = () => {
           {
             avatarArr.map((item, index) => {
               return (
-                <img src={item} alt="avatar-img" className='avatar-img' 
-                draggable = {false} onClick = {handleSetAvatar} key={index}
-                />
+                <img src={item} alt="avatar-img" className='avatar-img' draggable = {false} onClick = {handleSetAvatar} key={index}/>
               )
             })
           }

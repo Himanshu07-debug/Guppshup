@@ -10,7 +10,7 @@ router.post('/login', loginUser);
 router.put('/avatar/:id', setUserAvatar);
 router.put('/contact/:userId/:contactId', addContact);
 router.get('/search/:userName', searchUser);
-router.get('/contact/:id', getAllContacts); 
+router.get('/contact/:id', getAllContacts);
 
 
 export default router;
