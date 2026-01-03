@@ -61,7 +61,11 @@ const SearchBar = () => {
             // console.log(response);
             if (response.status === 200) {
                 localStorage.setItem('user-data', JSON.stringify(response.data));
+                setUser(response.data);
                 toast.success(`${userName} added to contacts.`, toastOptions);
+                
+                // Dispatch custom event to notify Contacts component
+                window.dispatchEvent(new CustomEvent('contactAdded'));
             }
         }catch (err) {
             if(err.response){

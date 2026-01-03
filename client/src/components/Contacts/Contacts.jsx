@@ -21,7 +21,10 @@ const Contacts = () => {
 
     const getAllContacts = async () => {
         try {
-            const id = user._id;
+            const currentUser = JSON.parse(localStorage.getItem('user-data'));
+            if (!currentUser || !currentUser._id) return;
+            
+            const id = currentUser._id;
             const url = getAllContactsApi + id;
             const response = await axios.get(url);
             setContactList(response.data);
@@ -34,6 +37,27 @@ const Contacts = () => {
 
     useEffect(() => {
         getAllContacts();
+        
+        // Listen for custom event when a contact is added
+        const handleContactAdded = () => {
+            getAllContacts();
+        };
+        
+        window.addEventListener('contactAdded', handleContactAdded);
+        
+        // Also listen for storage changes (when localStorage is updated)
+        const handleStorageChange = (e) => {
+            if (e.key === 'user-data') {
+                getAllContacts();
+            }
+        };
+        
+        window.addEventListener('storage', handleStorageChange);
+        
+        return () => {
+            window.removeEventListener('contactAdded', handleContactAdded);
+            window.removeEventListener('storage', handleStorageChange);
+        };
     }, []);
 
     // console.log(contactList);

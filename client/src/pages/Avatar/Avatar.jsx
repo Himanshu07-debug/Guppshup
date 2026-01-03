@@ -5,6 +5,7 @@ import { avatarApi } from '../../apis/restapis'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import { IoRefresh } from 'react-icons/io5'
 
 
 const Avatar = () => {
@@ -31,24 +32,31 @@ const Avatar = () => {
     setUser(userData);
   }, [])
 
-  useEffect(() => {
-    if (user.userName) {
-      const getAvatar = (index) => {
-        // Generate unique avatars using dicebear.com with different styles
-        const styles = ['avataaars', 'micah', 'open-peeps'];
-        const style = styles[index % styles.length];
-        const seed = `${user.userName}-${index}-${user._id || Date.now()}`;
-        const imgUrl = `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
-        return imgUrl;
-      };
+  const generateAvatars = () => {
+    if (!user.userName) return;
+    
+    const getAvatar = (index) => {
+      // Generate unique avatars using dicebear.com with different styles
+      const styles = ['avataaars', 'micah', 'open-peeps', 'bottts', 'personas', 'fun-emoji'];
+      const style = styles[index % styles.length];
+      // Generate a unique seed using username, index, timestamp, and random number
+      const randomSeed = Math.random().toString(36).substring(2, 15);
+      const timestamp = Date.now();
+      const seed = `${user.userName}-${index}-${timestamp}-${randomSeed}`;
+      const imgUrl = `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`;
+      return imgUrl;
+    };
 
-      const newAvatars = [];
-      for (let i = 0; i < 3; i++) {
-        const imgUrl = getAvatar(i);
-        newAvatars.push(imgUrl);
-      }
-      setAvatarArr(newAvatars);
+    const newAvatars = [];
+    for (let i = 0; i < 3; i++) {
+      const imgUrl = getAvatar(i);
+      newAvatars.push(imgUrl);
     }
+    setAvatarArr(newAvatars);
+  };
+
+  useEffect(() => {
+    generateAvatars();
   }, [user]);
 
   const handleSetAvatar = async (e) => {
@@ -79,6 +87,9 @@ const Avatar = () => {
         <div className="heading">
           <h1>Welcome <span>{user.userName} </span> !!</h1>
           <h2>Please Select Your Favourite Avatar</h2>
+          <button className="refresh-btn" onClick={generateAvatars} title="Generate new avatars">
+            <IoRefresh /> Generate New Avatars
+          </button>
         </div>
         <div className="avatars">
           {
