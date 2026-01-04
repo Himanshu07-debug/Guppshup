@@ -89,6 +89,311 @@ Guppshup/
 
 ---
 
+## 🔧 Backend Architecture & Implementation
+
+### Server Structure Overview
+
+The backend follows MVC (Model-View-Controller) architecture pattern:
+
+```
+server/
+├── index.js              (Main server file - Express setup, Socket.io)
+├── config/
+│   └── database.js       (MongoDB connection)
+├── models/               (Database schemas)
+│   ├── UserModel.js
+│   ├── MessageModel.js
+│   └── Token.js
+├── controller/           (Business logic)
+│   ├── UserController.js
+│   ├── MessageController.js
+│   └── jwt_controller.js
+└── routes/               (API endpoints)
+    ├── UserRoutes.js
+    └── MessageRoutes.js
+```
+
+### 1. Server Setup (`server/index.js`)
+
+**Key Components:**
+
+- **Express App**: REST API server handling HTTP requests
+- **Socket.io Server**: Real-time WebSocket server for instant messaging
+- **CORS Configuration**: Allows frontend (Netlify) to communicate with backend
+- **Global Online Users Map**: Tracks which users are currently connected
+
+**Important Implementation Details:**
+
+```javascript
+global.onlineUsers = new Map();  // Stores userId → socketId mapping
+```
+
+**Why this matters:**
+- Uses JavaScript Map for efficient user lookup (O(1) complexity)
+- Global variable allows access from socket handlers
+- When user connects: `onlineUsers.set(userId, socketId)`
+- When user disconnects: `onlineUsers.delete(userId)`
+- When sending message: Server finds receiver's socketId from Map and sends directly
+
+**Socket.io Events:**
+- `add-user`: Client connects, server stores userId and socketId mapping
+- `msg-send`: Server receives message, finds receiver's socket, sends message
+- `online-users`: Server broadcasts list of online users to all clients
+- `disconnect`: Cleans up user from online users Map
+
+**File Location:** `server/index.js` (lines 45-98)
+
+### 2. Database Models
+
+#### User Model (`server/models/UserModel.js`)
+
+**Schema Structure:**
+- `userName`: String (3-50 characters, required)
+- `email`: String (unique, 5-20 characters, required)
+- `password`: String (hashed, required)
+- `isAvatarSet`: Boolean (default: false)
+- `avatarPath`: String (URL to avatar image)
+- `contacts`: Array (stores contact user IDs)
+
+**Why it's important:**
+- Email uniqueness prevents duplicate accounts
+- Contacts stored as array of user IDs (references)
+- Avatar path allows users to customize profile picture
+- Password stored as hash (never plain text)
+
+#### Message Model (`server/models/MessageModel.js`)
+
+**Schema Structure:**
+- `message.text`: String (encrypted message content)
+- `users`: Array (contains both user IDs in conversation)
+- `sender`: ObjectId (reference to User model)
+- `timestamps`: Automatically added (createdAt, updatedAt)
+
+**Important Design Decision:**
+- Stores both users in `users` array for efficient querying
+- Uses `$all` MongoDB operator to find messages between two users
+- Sorted by `updatedAt` to show messages in chronological order
+- Sender reference allows knowing who sent which message
+
+**File Location:** `server/models/MessageModel.js`
+
+### 3. Controllers (Business Logic)
+
+#### User Controller (`server/controller/UserController.js`)
+
+**Key Functions:**
+
+**a) `registerUser`:**
+- Checks if email already exists (prevents duplicates)
+- Hashes password using bcrypt (10 salt rounds)
+- Creates new user in database
+- Returns saved user data
+
+**Security Implementation:**
+```javascript
+const hashedPassword = await bcrypt.hash(password, 10);
+```
+- Password never stored as plain text
+- bcrypt automatically handles salting
+- 10 rounds = good balance between security and performance
+
+**b) `loginUser`:**
+- Finds user by email
+- Compares provided password with hashed password using `bcrypt.compare()`
+- Generates JWT tokens (access token + refresh token)
+- Returns tokens and user data
+
+- `Why refresh tokens?`:
+- In a full-stack MERN app, access tokens are short-lived and used to authorize API requests. If an access token expires, the user would be logged out frequently. Refresh tokens solve this by allowing the backend to issue a new access token without forcing the user to log in again.
+- **Why both are needed:**
+   - Access token → short life → limits damage if stolen
+   - Refresh token → longer life → maintains user session smoothly
+   - Improves security + user experience
+   - Enables silent re-authentication in the background
+
+**JWT Token Generation:**
+```javascript
+const accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_SECRET_KEY, { expiresIn: "20d"});
+const refreshToken = jwt.sign(user.toJSON(), process.env.REFRESH_SECRET_KEY, { expiresIn: "20d"});
+```
+- Two tokens: Access (for API calls) and Refresh (for getting new access tokens)
+- Tokens contain user information (from user.toJSON())
+- Signed with secret keys from environment variables
+- 20-day expiration for both tokens
+
+**c) `searchUser`:**
+- Uses MongoDB regex for case-insensitive username search
+- `$regex` with `'i'` option = case-insensitive matching
+- Returns array of matching users
+
+**d) `addContact`:**
+- Prevents duplicate contacts (checks if contactId already in contacts array)
+- Uses spread operator to add new contact: `[...contacts, contactId]`
+- Updates user document with new contacts array
+- Returns updated user data
+
+**e) `getAllContacts`:**
+- Fetches user by ID
+- Loops through contacts array
+- For each contact ID, fetches full user data
+- Uses `.select()` to exclude sensitive fields (password, contacts, etc.)
+- Returns array of contact user objects
+
+**Performance Consideration:**
+- Uses loop to fetch contacts (could be optimized with `$in` operator)
+- Currently fetches contacts one by one (N+1 query pattern)
+- Could be improved with aggregation pipeline for better performance
+
+#### Message Controller (`server/controller/MessageController.js`)
+
+**a) `addMessage`:**
+- Creates new message document in database
+- Stores encrypted message text (encrypted on frontend before sending)
+- Stores both user IDs in `users` array
+- Stores sender ID
+- Returns created message
+
+**Important:** Message is already encrypted when it reaches backend - backend just stores it.
+
+**b) `getAllMessages`:**
+- Uses MongoDB `$all` operator to find messages where users array contains both from and to IDs
+- Sorts messages by `updatedAt: 1` (oldest first)
+- Transforms messages to add `fromSelf` flag (true if current user is sender)
+- Returns formatted message array
+
+**Query Optimization:**
+```javascript
+Messages.find({
+    users: { $all: [from, to] }
+}).sort({ updatedAt: 1 })
+```
+- `$all` ensures both users are in the array (works regardless of order)
+- Index on `users` field would improve performance for large datasets
+- Sorting ensures chronological order
+
+#### JWT Controller (`server/controller/jwt_controller.js`)
+
+**`authenticateToken` Middleware:**
+- Extracts token from request body
+- Verifies token using `jwt.verify()` with secret key
+- If valid: Calls `next()` to proceed to route handler
+- If invalid: Returns 403 (Forbidden) error
+
+**Why middleware pattern:**
+- Reusable across multiple routes
+- Protects routes without repeating verification code
+- Applied to `/message/add` route (messages require authentication)
+
+**Token Verification:**
+```javascript
+jwt.verify(token, process.env.ACCESS_SECRET_KEY, (error, user) => {
+    if (error) return response.status(403).json({ msg: 'invalid token' });
+    next();
+})
+```
+- Synchronous verification (could use async/await pattern)
+- Secret key must match the one used to sign token
+- Returns user data if valid (not used in current implementation, but available)
+
+**File Location:** `server/controller/jwt_controller.js` (lines 7-23)
+
+### 4. API Routes
+
+#### User Routes (`server/routes/UserRoutes.js`)
+
+**Endpoint Structure:**
+- `POST /api/register` → `registerUser` controller
+- `POST /api/login` → `loginUser` controller
+- `PUT /api/avatar/:id` → `setUserAvatar` controller
+- `PUT /api/contact/:userId/:contactId` → `addContact` controller
+- `GET /api/search/:userName` → `searchUser` controller
+- `GET /api/contact/:id` → `getAllContacts` controller
+
+**Route Parameters:**
+- `:id`, `:userId`, `:contactId`, `:userName` - Extracted from URL
+- Accessed via `req.params` in controllers
+
+#### Message Routes (`server/routes/MessageRoutes.js`)
+
+**Endpoint Structure:**
+- `POST /message/add` → `authenticateToken` middleware → `addMessage` controller
+- `POST /message` → `getAllMessages` controller (no auth required - could be improved)
+
+**Security Note:**
+- `/message/add` is protected with JWT authentication
+- `/message` (get all messages) is not protected - potential security issue
+- Should add authentication to getAllMessages endpoint
+
+### 5. Database Connection (`server/config/database.js`)
+
+**Implementation:**
+- Uses Mongoose to connect to MongoDB
+- Connection URL from environment variable (`process.env.DATABASE`)
+- Async function that returns Promise
+- Error handling for connection failures
+
+**Why environment variables:**
+- Security: Database credentials not hardcoded
+- Flexibility: Easy to change database without code changes
+- Different environments: Dev, staging, production can use different databases
+
+### 6. Socket.io Real-Time Implementation
+
+**Connection Flow:**
+1. Client connects → Server receives connection
+2. Client emits `add-user` with userId
+3. Server stores: `onlineUsers.set(userId, socket.id)`
+4. Server broadcasts updated online users list to all clients
+
+**Message Sending Flow:**
+1. Client emits `msg-send` with message data (to, from, message)
+2. Server looks up receiver's socketId: `onlineUsers.get(data.to)`
+3. If receiver online: Server sends message to their socket
+4. If receiver offline: Message only saved to database (no socket send)
+
+**Disconnection Handling:**
+1. Client disconnects → Server receives disconnect event
+2. Server finds userId from socketId (reverse lookup)
+3. Server removes user from onlineUsers Map
+4. Server broadcasts updated online users list
+
+**Why this implementation:**
+- Efficient: O(1) lookup time for finding user sockets
+- Real-time: Messages delivered instantly if user online
+- Scalable: Can handle many concurrent connections
+- Clean: Automatic cleanup on disconnect
+
+### 7. Important Backend Features
+
+#### Security Features:
+1. **Password Hashing**: bcrypt with 10 salt rounds
+2. **JWT Authentication**: Token-based stateless authentication
+3. **Environment Variables**: Sensitive data (keys, database URL) in .env
+4. **CORS Configuration**: Restricts API access to specific origin
+5. **Input Validation**: Mongoose schema validation (min/max length, required fields)
+
+#### Error Handling:
+- Try-catch blocks in all async functions
+- Proper HTTP status codes (400, 401, 403, 500)
+- Meaningful error messages returned to client
+- Database errors caught and handled gracefully
+
+#### Performance Considerations:
+1. **Database Queries**: Efficient MongoDB queries with proper operators
+2. **Indexing**: Email field indexed (unique constraint)
+3. **Socket.io**: Direct socket-to-socket communication (no polling)
+4. **Connection Pooling**: Mongoose handles MongoDB connection pooling
+
+#### Areas for Improvement:
+1. **getAllContacts**: Could use aggregation pipeline instead of loop
+2. **getAllMessages**: Should require authentication
+3. **Error Messages**: Some error messages could be more user-friendly
+4. **Input Validation**: Could add more validation (email format, password strength)
+5. **Rate Limiting**: No rate limiting on API endpoints
+6. **Caching**: Could cache frequently accessed data (user info, contacts)
+
+---
+
 ## ✨ Key Features
 
 ### 1. User Authentication
@@ -563,26 +868,46 @@ However, the current stack (MERN) is perfectly suitable for this application and
 ## 📌 Quick Reference
 
 ### Important Files:
-- **Socket.io Setup:** `server/index.js`
+
+**Backend:**
+- **Socket.io Setup:** `server/index.js` (lines 45-98)
+- **User Authentication:** `server/controller/UserController.js` (register, login, JWT generation)
+- **JWT Middleware:** `server/controller/jwt_controller.js` (token verification)
+- **Message Handling:** `server/controller/MessageController.js` (save/get messages)
+- **Database Models:** `server/models/UserModel.js`, `server/models/MessageModel.js`
+- **API Routes:** `server/routes/UserRoutes.js`, `server/routes/MessageRoutes.js`
+- **Database Connection:** `server/config/database.js`
+
+**Frontend:**
 - **Message Encryption:** `client/src/components/ChatBox/ChatBox.jsx`
-- **Authentication:** `server/controller/jwt_controller.js`
 - **State Management:** `client/src/store/`
 - **Contact List:** `client/src/components/Contacts/Contacts.jsx`
 - **Search Optimization:** `client/src/components/SearchBar/SearchBar.jsx`
+- **Socket.io Client:** `client/src/pages/Chat/Chat.jsx`, `client/src/components/ChatBox/ChatBox.jsx`
 
 ### Key Endpoints:
-- Register: `POST /api/register`
-- Login: `POST /api/login`
-- Add Message: `POST /message/add`
-- Get Messages: `POST /message`
-- Search Users: `GET /api/search/:userName`
-- Add Contact: `PUT /api/contact/:userId/:contactId`
-- Get Contacts: `GET /api/contact/:id`
+
+**User Management:**
+- Register: `POST /api/register` (creates user, hashes password)
+- Login: `POST /api/login` (verifies credentials, returns JWT tokens)
+- Set Avatar: `PUT /api/avatar/:id` (updates user avatar)
+- Search Users: `GET /api/search/:userName` (case-insensitive search)
+- Add Contact: `PUT /api/contact/:userId/:contactId` (adds to contacts array)
+- Get Contacts: `GET /api/contact/:id` (returns all user's contacts)
+
+**Messaging:**
+- Add Message: `POST /message/add` (requires JWT auth, saves encrypted message)
+- Get Messages: `POST /message` (returns all messages between two users)
+
+**Socket.io Events:**
+- `add-user`: Client → Server (registers user as online)
+- `msg-send`: Client → Server → Client (real-time message delivery)
+- `online-users`: Server → Client (broadcasts online users list)
+- `msg-receive`: Server → Client (receives incoming messages)
 
 ---
 
 **Good luck with your interviews! 🚀**
 
 Remember: Be confident, explain clearly, and show your passion for the project. You built something amazing - own it!
-
 

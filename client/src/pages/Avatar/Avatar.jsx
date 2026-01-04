@@ -44,7 +44,7 @@ const Avatar = () => {
       const timestamp = Date.now();
       const seed = `${user.userName}-${index}-${timestamp}-${randomSeed}`;
       const imgUrl = `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`;
-      return imgUrl;
+    return imgUrl;
     };
 
     const newAvatars = [];

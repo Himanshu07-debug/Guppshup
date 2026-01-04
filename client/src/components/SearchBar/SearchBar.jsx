@@ -42,13 +42,13 @@ const SearchBar = () => {
         }
 
         const debounceTimer = setTimeout(async () => {
-            try {
-                const response = await axios.get(`${searchApi}${searchKeyword}`);
-                setSearchedResult(response.data);
-            }
-            catch (err) {
-                console.log(err);
-            }
+        try {
+            const response = await axios.get(`${searchApi}${searchKeyword}`);
+            setSearchedResult(response.data);
+        }
+        catch (err) {
+            console.log(err);
+        }
         }, 300); // 300ms debounce delay
 
         return () => clearTimeout(debounceTimer);
