@@ -4,6 +4,8 @@ import './Header.scss'
 import { Comment } from 'react-loader-spinner'
 import { useDispatch } from 'react-redux'
 import { setIsLoggedIn } from '../../store/userSlice'
+import { clearContactState } from '../../store/contactSlice'
+import { clearMessageArr } from '../../store/messageSlice'
 import SearchBar from '../SearchBar/SearchBar'
 
 const Header = (props) => {
@@ -22,7 +24,11 @@ const Header = (props) => {
     const handleLogOut = () => {
         if (props.btnText === 'Sign Out') {
             localStorage.removeItem('user-data');
+            sessionStorage.removeItem('accessToken');
+            sessionStorage.removeItem('refreshToken');
             dispatch(setIsLoggedIn(false));
+            dispatch(clearContactState());
+            dispatch(clearMessageArr());
         }
         Navigate(`${props.linkTo}`)
         return;

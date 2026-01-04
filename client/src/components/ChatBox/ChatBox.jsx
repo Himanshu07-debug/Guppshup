@@ -34,7 +34,13 @@ const ChatBox = (props) => {
             socket.current.emit('add-user', CurrentUser._id);
             // console.log(socket);
         }
-    }, []);
+        
+        return () => {
+            if (socket.current) {
+                socket.current.disconnect();
+            }
+        };
+    }, [CurrentUser]);
 
     const handleSend = async (e) => {
         e.preventDefault();

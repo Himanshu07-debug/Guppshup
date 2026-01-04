@@ -10,10 +10,13 @@ const messageSlice = createSlice({
     reducers : {
         setMessageArr : (state, action) => {
             state.messageArr = [...action.payload];
+        },
+        clearMessageArr : (state) => {
+            state.messageArr = [];
         }
     }
 })
 
-export const { setMessageArr } = messageSlice.actions;
+export const { setMessageArr, clearMessageArr } = messageSlice.actions;
 
 export default messageSlice.reducer;

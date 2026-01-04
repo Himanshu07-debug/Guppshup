@@ -23,6 +23,12 @@ const Chat = () => {
         socket.current.emit('add-user', CurrentUser._id);
         // console.log(socket);
     }
+    
+    return () => {
+        if (socket.current) {
+            socket.current.disconnect();
+        }
+    };
 }, []);
 
   useEffect(() => {
